@@ -48,8 +48,8 @@ class BuildSettingsTryTest extends FlatSpec with MockFactory with Matchers {
     buildHistoryWithoutMatch.getEntries _ when * returns Seq(buildMaster).asJava
 
     // settings
-    val settingMatchAll = BuildSetting(buildTypeId, ".*", "", "")
-    val settingMatchDefault = BuildSetting(buildTypeId, "default", "", "")
+    val settingMatchAll = BuildSetting(buildTypeId, "", ".*", "", "")
+    val settingMatchDefault = BuildSetting(buildTypeId, "", "default", "", "")
 
     // Assertion
     forAll(data) { (buildHistory: BuildHistory, buildSetting: BuildSetting, found: Option[SFinishedBuild]) ⇒
@@ -84,9 +84,9 @@ class BuildSettingsTryTest extends FlatSpec with MockFactory with Matchers {
       Table(
         ("setting", "user", "expected"), // First tuple defines column names
         // Subsequent tuples define the data
-        (BuildSetting(buildTypeId, branchName, "", ""), user, None),
-        (BuildSetting(buildTypeId, branchName, channelName, ""), user, Some(SlackChannel(channelName))),
-        (BuildSetting(buildTypeId, branchName, "", "", notifyCommitter = true), user, Some(SlackUser(email)))
+        (BuildSetting(buildTypeId, "", branchName, "", ""), user, None),
+        (BuildSetting(buildTypeId, "", branchName, channelName, ""), user, Some(SlackChannel(channelName))),
+        (BuildSetting(buildTypeId, "", branchName, "", "", notifyCommitter = true), user, Some(SlackUser(email)))
       )
     }
   }

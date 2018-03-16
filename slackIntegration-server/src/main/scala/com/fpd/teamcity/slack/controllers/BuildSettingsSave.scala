@@ -41,9 +41,9 @@ class BuildSettingsSave(val configManager: ConfigManager,
     val result = for {
     // preparing params
       branch ← request.param("branchMask")
+      selectedOauthToken ← request.param("selectedOauthToken")
       buildId ← request.param("buildTypeId")
       message ← request.param("messageTemplate")
-
       config ← configManager.config
     } yield {
       lazy val artifactsMask = request.param("artifactsMask")
@@ -52,7 +52,7 @@ class BuildSettingsSave(val configManager: ConfigManager,
 
       // store build setting
       def updateConfig() = configManager.updateBuildSetting(
-        BuildSetting(buildId, branch, channel.getOrElse(""), message, flags, artifactsMask.getOrElse(""), request.param("deepLookup").isDefined, notifyCommitter),
+        BuildSetting(buildId, selectedOauthToken, branch, channel.getOrElse(""), message, flags, artifactsMask.getOrElse(""), request.param("deepLookup").isDefined, notifyCommitter),
         request.param("key")
       )
 

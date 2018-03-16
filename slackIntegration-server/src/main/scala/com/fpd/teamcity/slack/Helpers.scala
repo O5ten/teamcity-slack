@@ -41,6 +41,10 @@ object Helpers {
       def isUnknown: Boolean = status.getPriority == Status.UNKNOWN.getPriority
     }
 
+    implicit class Tokens(val tokens: String) {
+      def csv2List: List[String] = tokens.split(",").map(x => x.trim).toList
+    }
+
     implicit class RichBuild(val build: SBuild) extends AnyVal {
       def committees: Vector[SUser] =
         build.getContainingChanges.asScala.toVector.flatMap(_.getCommitters.asScala).distinct

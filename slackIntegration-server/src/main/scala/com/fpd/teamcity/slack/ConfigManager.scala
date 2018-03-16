@@ -28,6 +28,7 @@ class ConfigManager(paths: ServerPaths) {
     parse(configFile).extractOpt[Config]
   } else None
 
+  def oauthKeys: Option[List[String]] = config.map(_.oauthKey.csv2List)
   def oauthKey: Option[String] = config.map(_.oauthKey)
   def publicUrl: Option[String] = config.flatMap(_.publicUrl)
   def senderName: Option[String] = config.flatMap(_.senderName).filter(_.nonEmpty)
@@ -90,14 +91,13 @@ class ConfigManager(paths: ServerPaths) {
     updateAndPersist(c.copy(buildSettings = c.buildSettings - key))
   }
 
-  def details: Map[String, Option[String]] = Map(
+  def details: Map[String, Option[AnyRef]] = Map(
     "oauthKey" → oauthKey,
     "publicUrl" → publicUrl,
     "senderName" → senderName,
     "enabled" → enabled.filter(x ⇒ x).map(_ ⇒ "1"),
     "personalEnabled" → personalEnabled.filter(x ⇒ x).map(_ ⇒ "1")
   )
-
   def isAvailable: Boolean = config.exists(c ⇒ c.enabled.exists(b ⇒ b) && c.oauthKey.length > 0)
 }
 
@@ -114,6 +114,7 @@ object ConfigManager {
   type BuildSettings = Map[String, BuildSetting]
 
   case class BuildSetting(buildTypeId: String,
+                          selectedOauthToken: String,
                           branchMask: String,
                           slackChannel: String,
                           messageTemplate: String,
@@ -123,6 +124,7 @@ object ConfigManager {
                           notifyCommitter: Boolean = false
                          ) {
     // Getters for JSP
+    lazy val getSelectedOauthToken: String = selectedOauthToken
     lazy val getBranchMask: String = branchMask
     lazy val getSlackChannel: String = slackChannel
     lazy val getMessageTemplate: String = messageTemplate

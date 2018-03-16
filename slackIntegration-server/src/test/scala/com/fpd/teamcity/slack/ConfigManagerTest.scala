@@ -10,7 +10,7 @@ class ConfigManagerTest extends FlatSpec with MockFactory with Matchers {
     manager.update(key, "", personalEnabled = true, enabled = true, "")
     manager.oauthKey shouldEqual Some(key)
 
-    val buildSetting = BuildSetting("", "", "", "{name}", Set.empty)
+    val buildSetting = BuildSetting("", "","", "", "{name}", Set.empty)
     manager.updateBuildSetting(buildSetting, None)
     manager.oauthKey shouldEqual Some(key)
     manager.allBuildSettingList.values.toSet shouldEqual Set(buildSetting)

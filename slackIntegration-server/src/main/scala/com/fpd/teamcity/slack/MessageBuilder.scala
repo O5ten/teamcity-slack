@@ -27,7 +27,7 @@ class MessageBuilder(build: SBuild, context: MessageBuilderContext) {
 
     def artifacts = s"<${context.getDownloadAllArtifactsUrl(build)}|Download all artifacts>"
 
-    lazy val artifactsRelUrl = build.getArtifactsDirectory.getPath.stripPrefix(context.getArtifactsPath).stripPrefix("/")
+    lazy val artifactsRelUrl = build.getArtifactsDirectory.getPath.stripPrefix(context.getArtifactsPath).stripPrefix("\\")
 
     def artifactLinks = if (setting.isDefined && !setting.get.artifactsMask.isEmpty) {
       val links = ArrayBuffer.empty[String]

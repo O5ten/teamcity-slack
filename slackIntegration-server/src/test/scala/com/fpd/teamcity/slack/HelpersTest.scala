@@ -33,6 +33,10 @@ class HelpersTest extends FlatSpec with MockFactory with Matchers {
       )
   }
 
+  "Tokens.csv2List" should "split a csv string into a trimmed list containing the tokens" in {
+    "token1 , token2,token3".csv2List shouldEqual List("token1", "token2", "token3")
+  }
+
   "RichBuild.branchMask" should "return correct value for empty branch" in {
     val build = stub[SBuild]
     build.getBranch _ when() returns null

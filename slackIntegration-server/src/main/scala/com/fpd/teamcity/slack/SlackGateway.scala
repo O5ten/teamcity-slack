@@ -3,17 +3,22 @@ package com.fpd.teamcity.slack
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
 
+import com.fpd.teamcity.slack.ConfigManager.BuildSetting
 import com.fpd.teamcity.slack.Strings.SlackGateway._
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory
 import com.ullink.slack.simpleslackapi.replies.{ParsedSlackReply, SlackMessageReply}
-import com.ullink.slack.simpleslackapi.{SlackChatConfiguration, SlackMessageHandle, SlackSession, SlackAttachment ⇒ ApiSlackAttachment}
+import com.ullink.slack.simpleslackapi.{SlackChatConfiguration, SlackMessageHandle, SlackSession, SlackAttachment => ApiSlackAttachment}
 import jetbrains.buildServer.serverSide.TeamCityProperties
 
 import scala.concurrent.Future
 import scala.language.{implicitConversions, postfixOps}
 import scala.util.{Failure, Success, Try}
 
+import Helpers.Implicits._
+
+
 object SlackGateway {
+
 
   sealed trait Destination
 
@@ -40,7 +45,6 @@ object SlackGateway {
     apiSlackAttachment.setColor(attachment.color)
     apiSlackAttachment.addMarkdownIn("fields")
     apiSlackAttachment.addField("", attachment.text, false)
-
     SlackMessage("", Some(apiSlackAttachment))
   }
 
@@ -81,12 +85,12 @@ class SlackGateway(val configManager: ConfigManager, logger: Logger) {
 
   def session: Option[SlackSession] = configManager.config.flatMap(x ⇒ sessionByConfig(x).toOption)
 
-  def sessionByConfig(config: ConfigManager.Config): Try[SlackSession] = sessions.get(config.oauthKey).filter(_.isConnected) match {
+  def sessionByConfig(config: ConfigManager.Config): Try[SlackSession] = config.oauthKey.csv2List.foreach((oauthKey: String) => sessions.get(oauthKey).filter(_.isConnected) match {
     case Some(x) ⇒ Success(x)
     case _ ⇒
       val session = if (proxyHost.isDefined)
         SlackSessionFactory
-          .getSlackSessionBuilder(config.oauthKey)
+          .getSlackSessionBuilder(oauthKey)
           .withAutoreconnectOnDisconnection(true)
           .withConnectionHeartbeat(0, null)
           .withProxy(Proxy.Type.HTTP, proxyHost.get, proxyPort, proxyLogin.orNull, proxyPassword.orNull)
@@ -97,7 +101,7 @@ class SlackGateway(val configManager: ConfigManager, logger: Logger) {
       val option = Try(session.connect()).map(_ ⇒ session)
       option.foreach(s ⇒ sessions = sessions + (config.oauthKey → s))
       option
-  }
+  })
 
   def sendMessage(destination: Destination, message: SlackMessage): Future[MessageSent] =
     if (message.isEmpty) {

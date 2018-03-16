@@ -25,10 +25,10 @@ class BuildSettingEditPage(controllerManager: WebControllerManager,
     val result = for {
       key ← request.param("id")
       model ← config.buildSetting(key)
+      oauthTokens ← config.oauthKeys
     } yield {
-      new ModelAndView(view, Map("model" → model, "key" → key).asJava)
+      new ModelAndView(view, Map("model" → model, "key" → key, "oauthTokens" → oauthTokens).asJava)
     }
-
     result getOrElse new ModelAndView(view, Map("defaultMessage" → MessageBuilder.defaultMessage).asJava)
   }
 

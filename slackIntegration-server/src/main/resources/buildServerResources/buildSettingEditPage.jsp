@@ -9,6 +9,19 @@
       <div class="smallNote">Regular expressions are allowed</div>
     </div>
     <div class="group">
+       <div class="group">
+          Workspace:
+          <select id="oauthTokens">
+              <c:forEach var="token" items="${oauthTokens.tokens}">
+                  <option value="${token}">${item}</option>
+              </c:forEach>
+          </select>
+          <label class="tableLabel" for="branchMask">Branch:</label>
+          <span><forms:textField className="mediumField textField" name="branchMask" expandable="false" value="${model.branchMask}"/></span>
+          <div class="smallNote">Regular expressions are allowed</div>
+       </div>
+    </div>
+    <div class="group">
       <label class="tableLabel" for="slackChannel">Slack channel:</label>
       <span><forms:textField className="mediumField textField" name="slackChannel" expandable="false" value="${model.slackChannel}"/></span>
     </div>

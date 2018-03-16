@@ -189,15 +189,13 @@ class MessageBuilderTest extends FlatSpec with MockFactory with Matchers {
     build.getContainingChanges _ when() returns mockChanges
     build.getArtifactsDirectory _ when() returns new File("/full/artifacts/path/my/build/folder/")
 
-    val messageTemplate = """{name}
-                            |{artifactsRelUrl}
-                          """.stripMargin
+    val messageTemplate = "{name}\n"+
+                            "{artifactsRelUrl}\n".stripMargin
 
 
     messageBuilder(artifactsPath = "/full/artifacts/path/").compile(messageTemplate) shouldEqual SlackAttachment(
-      s"""Full name
-        |my/build/folder
-      """.stripMargin.trim, MessageBuilder.statusNormalColor)
+      s"Full name\n" +
+        "my/build/folder".stripMargin.trim, MessageBuilder.statusNormalColor)
   }
 
   "MessageBuilder.compile" should "compile template with parameter placeholders" in {
@@ -271,8 +269,8 @@ class MessageBuilderTest extends FlatSpec with MockFactory with Matchers {
                           """.stripMargin
 
     messageBuilder().compile(messageTemplate) shouldEqual SlackAttachment(
-      s"""Full name
-        |${Strings.MessageBuilder.statusStarted}
+      "Full name\n" +
+        s"${Strings.MessageBuilder.statusStarted}\n"
       """.stripMargin.trim, MessageBuilder.statusNormalColor)
   }
 

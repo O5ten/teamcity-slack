@@ -120,6 +120,7 @@ class BuildSettingsSaveTest extends FlatSpec with Matchers {
 object BuildSettingsSaveTest extends MockFactory {
   val correctRequestParams = Map(
     "branchMask" → ".*",
+    "selectedOauthToken" → "someToken",
     "slackChannel" → "someChannel",
     "buildTypeId" → "MyAwesomeBuildId",
     "messageTemplate" → "Build was done"

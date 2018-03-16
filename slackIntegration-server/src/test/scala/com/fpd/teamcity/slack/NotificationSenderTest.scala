@@ -82,7 +82,7 @@ object NotificationSenderTest {
 
     def settingFlags: Set[BuildSettingFlag]
     val channelName = "general"
-    val setting = BuildSetting("buildTypeId", "my-branch", channelName, "", settingFlags)
+    val setting = BuildSetting("buildTypeId", "", "my-branch", channelName, "", settingFlags)
     val build: SBuild = stub[SBuild]
     val branch: Branch = stub[Branch]
 
